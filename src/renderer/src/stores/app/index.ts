@@ -8,7 +8,7 @@ export const useAppStore = defineStore('app-store', {
     return {
       bgOpacity: 1,
       mouseOpacity: false,
-      autoCheckUpdate: false,
+      autoCheckUpdate: true,
       mouseOutTime: 10,
       textAttr: {
         fontSize: 11,

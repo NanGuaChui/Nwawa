@@ -2,20 +2,28 @@
 import { useAppStore } from '@renderer/stores/app';
 import { useNovelStore } from '@renderer/stores/novel';
 import { NScrollbar, NSpin, NText } from 'naive-ui';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const appStore = useAppStore();
 const novelStore = useNovelStore();
+
+const scrollbarRef = ref<InstanceType<typeof NScrollbar> | null>(null);
 
 // 当前章节信息
 const chapterInfo = computed(() => {
   if (!novelStore.hasNovel) return '';
   return `${novelStore.currentIndex + 1}/${novelStore.chapterCount}: ${novelStore.currentNovel}`;
 });
+
+watch(
+  () => novelStore.novelContent,
+  () => scrollbarRef.value?.scrollTo({ top: 0 }),
+  { immediate: true }
+);
 </script>
 
 <template>
-  <NScrollbar class="h-full">
+  <NScrollbar ref="scrollbarRef" class="h-full">
     <NText v-if="novelStore.hasNovel" class="block text-center mb-2 opacity-60" :style="appStore.fontCss">
       {{ chapterInfo }}
     </NText>

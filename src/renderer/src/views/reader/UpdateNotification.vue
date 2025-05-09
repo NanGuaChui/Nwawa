@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { NProgress, NModal, NButton, NSpace, NAlert, NSpin } from 'naive-ui';
+import { NProgress, NModal, NButton, NSpace, NAlert, NSpin, useMessage } from 'naive-ui';
 import IconButton from '@renderer/components/IconButton.vue';
 import { useAppStore } from '@renderer/stores/app';
 import { setWindoSize } from '@renderer/utils/ipc-util';
 
+const ms = useMessage();
 const appStore = useAppStore();
 const isShowModal = ref(false);
 const updateInfo = ref<any>(null);
+const isLoading = ref(false);
 const downloadProgress = ref(0);
 const status = ref('idle'); // idle, checking, available, downloading, downloaded, error
 
 // 检查更新
 const checkForUpdates = async () => {
-  setWindoSize(300, 220);
-
-  status.value = 'checking';
-  isShowModal.value = true; // 显示模态窗口，展示检查状态
   try {
+    status.value = 'checking';
+    isLoading.value = true;
     await window.electron.ipcRenderer.invoke('update:check-for-updates');
   } catch (error) {
     console.error('检查更新失败', error);
@@ -56,12 +56,21 @@ interface UpdateMessage {
 // 处理更新消息
 const handleUpdateMessage = (_event: any, message: UpdateMessage) => {
   console.log('更新消息:', message);
-
   status.value = message.type;
   switch (message.type) {
     case 'available':
       updateInfo.value = message.info;
       isShowModal.value = true;
+      setWindoSize(300, 220);
+      isLoading.value = false;
+      break;
+    case 'not-available':
+      ms.success('当前已是最新版本');
+      isLoading.value = false;
+      break;
+    case 'error':
+      console.error('更新错误:', message.err);
+      isLoading.value = false;
       break;
     case 'progress':
       downloadProgress.value = Math.floor(message.progressObj?.percent || 0);
@@ -70,11 +79,6 @@ const handleUpdateMessage = (_event: any, message: UpdateMessage) => {
       updateInfo.value = message.info;
       break;
     case 'checking':
-      break;
-    case 'not-available':
-      break;
-    case 'error':
-      console.error('更新错误:', message.err);
       break;
   }
 };
@@ -98,9 +102,7 @@ onMounted(() => {
 
   // 应用启动时自动检查更新
   if (appStore.autoCheckUpdate) {
-    setTimeout(() => {
-      checkForUpdates();
-    }, 3000); // 延迟3秒检查，确保应用已完全加载
+    checkForUpdates();
   }
 });
 
@@ -111,7 +113,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <IconButton icon="ri:loop-left-fill" text="检查更新" :style="appStore.fontCss" @click="checkForUpdates" />
+  <IconButton
+    icon="ri:loop-left-fill"
+    text="检查更新"
+    :style="appStore.fontCss"
+    :loading="isLoading"
+    @click="checkForUpdates"
+  />
   <NModal v-model:show="isShowModal" preset="dialog" title="发现新版本" :mask-closable="false" size="small">
     <template #default>
       <div class="update-content">
@@ -150,10 +158,6 @@ onUnmounted(() => {
             </template>
             检查更新中
           </NAlert>
-        </template>
-
-        <template v-else-if="status === 'not-available'">
-          <NAlert type="info">当前已是最新版本</NAlert>
         </template>
       </div>
     </template>
