@@ -1,0 +1,4 @@
+provider: github
+owner: NanGuaChui
+repo: Nwawa
+updaterCacheDirName: nwawa-updater
