@@ -7,7 +7,7 @@ import NovelContent from './NovelContent.vue';
 import Setting from '@renderer/views/setting/Index.vue';
 import ReaderControls from '@renderer/views/reader/ReaderControls.vue';
 import { useKeyboardNavigation } from '@renderer/composables/useKeyboardNavigation';
-import { toggleWin } from '@renderer/utils/ipc-util';
+import { setWindoSize, toggleWin } from '@renderer/utils/ipc-util';
 
 const appStore = useAppStore();
 const novelStore = useNovelStore();
@@ -20,6 +20,7 @@ const hideTimer = ref<number | null>(null);
 useKeyboardNavigation();
 
 const openSetting = () => {
+  setWindoSize(300, 220);
   settingRef.value?.toggle();
 };
 
