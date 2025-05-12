@@ -55,7 +55,7 @@ const buttons = computed(() => [
 </script>
 
 <template>
-  <div class="flex self-end items-center p-1">
+  <div class="controls flex self-end items-center p-1 opacity-0 transition-opacity">
     <UpdateNotification />
     <IconButton
       v-for="(btn, index) in buttons"

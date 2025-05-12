@@ -77,7 +77,7 @@ onUnmounted(() => {
 <template>
   <div
     ref="readerRef"
-    class="h-screen flex flex-col"
+    class="reader h-screen flex flex-col"
     :class="{ 'opacity-0 hover:opacity-100 transition-opacity': appStore.mouseOpacity }"
   >
     <ReaderControls :on-open-setting="openSetting" />
@@ -90,4 +90,10 @@ onUnmounted(() => {
   <Setting ref="settingRef" />
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.reader {
+  &:hover .controls {
+    opacity: 1;
+  }
+}
+</style>
