@@ -10,8 +10,8 @@ export const appConfig = {
 };
 
 export const mainWindowConfig = {
-  minWidth: 300,
-  minHeight: 100,
+  minWidth: 100,
+  minHeight: 20,
   width: 520,
   height: 225
 };
