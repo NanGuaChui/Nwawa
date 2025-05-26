@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { NProgress, NModal, NButton, NSpace, NAlert, NSpin, useMessage } from 'naive-ui';
 import IconButton from '@renderer/components/IconButton.vue';
 import { useAppStore } from '@renderer/stores/app';
-import { setWindoSize } from '@renderer/utils/ipc-util';
+import { setWindowSize } from '@renderer/utils/ipc-util';
 
 const ms = useMessage();
 const appStore = useAppStore();
@@ -61,7 +61,7 @@ const handleUpdateMessage = (_event: any, message: UpdateMessage) => {
     case 'available':
       updateInfo.value = message.info;
       isShowModal.value = true;
-      setWindoSize(300, 220);
+      setWindowSize('normal');
       isLoading.value = false;
       break;
     case 'not-available':

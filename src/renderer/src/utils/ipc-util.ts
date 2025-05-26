@@ -39,8 +39,28 @@ export const removeNovel = () => {
 };
 
 /**
- * 移除当前小说
+ * 设置窗口大小
+ * @param widthOrOptions 窗口宽度或配置对象
+ * @param height 窗口高度 (当第一个参数为宽度时使用)
+ * @returns Promise
  */
-export const setWindoSize = (width: number, height: number) => {
-  return window.electron.ipcRenderer.invoke('set-window-size', { width, height });
+export const setWindowSize = (widthOrPresets: number | 'normal' | 'single', height?: number) => {
+  // 预设尺寸
+  const presets: Record<string, { width: number; height: number }> = {
+    normal: { width: 300, height: 280 },
+    single: { width: 300, height: 70 }
+  };
+
+  let params: { width: number; height: number };
+
+  // 处理不同类型的参数
+  if (typeof widthOrPresets === 'number' && height !== undefined) {
+    // 直接传入宽高: setWindowSize(300, 200)
+    params = { width: widthOrPresets, height };
+  } else {
+    // 传入预设模式名称: setWindowSize('normal')
+    params = presets[widthOrPresets] || presets.normal;
+  }
+
+  return window.electron.ipcRenderer.invoke('set-window-size', params);
 };

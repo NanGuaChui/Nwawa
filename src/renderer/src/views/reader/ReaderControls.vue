@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAppStore } from '@renderer/stores/app';
 import { useNovelStore } from '@renderer/stores/novel';
-import { removeNovel } from '@renderer/utils/ipc-util';
+import { removeNovel, setWindowSize } from '@renderer/utils/ipc-util';
 import IconButton from '@renderer/components/IconButton.vue';
 import { computed } from 'vue';
 import UpdateNotification from './UpdateNotification.vue';
@@ -17,6 +17,16 @@ const switchOpacity = () => {
 
 const switchMouseOpacity = () => {
   appStore.setMouseOpacity(!appStore.mouseOpacity);
+};
+
+const toggleSingleLineMode = () => {
+  const newValue = !appStore.singleLineMode;
+  appStore.setSingleLineMode(newValue);
+  if (newValue) {
+    setWindowSize('single');
+  } else {
+    setWindowSize('normal');
+  }
 };
 
 const onPrev = () => {
@@ -46,6 +56,12 @@ const buttons = computed(() => [
     class: appStore.mouseOpacity ? '!text-green-400' : '',
     text: appStore.mouseOpacity ? '关闭鼠标移出淡出' : '开启鼠标移出淡出',
     onClick: switchMouseOpacity
+  },
+  {
+    icon: 'ri:text-wrap',
+    text: appStore.singleLineMode ? '关闭单行模式' : '开启单行模式',
+    class: appStore.singleLineMode ? '!text-green-400' : '',
+    onClick: toggleSingleLineMode
   },
   { icon: 'ri:a-b', text: '背景色', class: appStore.bgOpacity !== 1 ? '!text-green-400' : '', onClick: switchOpacity },
   { icon: 'ri:arrow-left-line', text: '上一页', onClick: onPrev },

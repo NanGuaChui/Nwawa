@@ -7,7 +7,7 @@ import NovelContent from './NovelContent.vue';
 import Setting from '@renderer/views/setting/Index.vue';
 import ReaderControls from '@renderer/views/reader/ReaderControls.vue';
 import { useKeyboardNavigation } from '@renderer/composables/useKeyboardNavigation';
-import { setWindoSize, toggleWin } from '@renderer/utils/ipc-util';
+import { setWindowSize, toggleWin } from '@renderer/utils/ipc-util';
 
 const appStore = useAppStore();
 const novelStore = useNovelStore();
@@ -20,7 +20,6 @@ const hideTimer = ref<number | null>(null);
 useKeyboardNavigation();
 
 const openSetting = () => {
-  setWindoSize(300, 220);
   settingRef.value?.toggle();
 };
 
@@ -48,6 +47,11 @@ const handleMouseEnter = () => {
 onMounted(() => {
   // 加载小说列表
   novelStore.refresh();
+
+  // 如果是单行模式，设置窗口大小
+  if (appStore.singleLineMode) {
+    setWindowSize('single');
+  }
 
   // 设置拖放事件处理
   if (readerRef.value) {

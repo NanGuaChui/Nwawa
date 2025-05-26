@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import IconButton from '@renderer/components/IconButton.vue';
 import { useAppStore } from '@renderer/stores/app';
+import { setWindowSize } from '@renderer/utils/ipc-util';
 import { NColorPicker, NForm, NFormItem, NInputNumber, NModal, NSlider } from 'naive-ui';
 import { ref, watch } from 'vue';
 
@@ -9,11 +10,18 @@ const showModal = ref(false);
 const model = ref({
   fontSize: appStore.textAttr.fontSize,
   color: appStore.textAttr.color,
-  mouseOutTime: appStore.mouseOutTime
+  mouseOutTime: appStore.mouseOutTime,
+  maxCharsPerLine: appStore.maxCharsPerLine
 });
 
 // 监听模型变化并更新到 store
 watch(model, appStore.setTextAttr, { deep: true });
+
+watch(showModal, (newValue) => {
+  if (appStore.singleLineMode) {
+    setWindowSize(newValue ? 'normal' : 'single');
+  }
+});
 
 defineExpose({
   toggle: () => {
@@ -37,6 +45,9 @@ defineExpose({
         </NFormItem>
         <NFormItem path="color" label="鼠标移开隐藏(秒)">
           <NInputNumber v-model:value="model.mouseOutTime" clearable />
+        </NFormItem>
+        <NFormItem path="maxCharsPerLine" label="单行最大字符数">
+          <NInputNumber v-model:value="model.maxCharsPerLine" :min="10" :max="200" />
         </NFormItem>
       </NForm>
     </div>

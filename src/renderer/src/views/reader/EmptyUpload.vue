@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Icon } from '@iconify/vue';
-import { processFile, setWindoSize } from '@renderer/utils/ipc-util';
+import { processFile, setWindowSize } from '@renderer/utils/ipc-util';
 import { NIcon, NP, NText, NUpload, NUploadDragger, useMessage } from 'naive-ui';
 import { useNovelStore } from '@renderer/stores/novel';
 import { onMounted, ref } from 'vue';
@@ -52,7 +52,7 @@ const handleFileChange = async ({ file }) => {
 };
 
 onMounted(() => {
-  setWindoSize(300, 220);
+  setWindowSize('normal');
 });
 </script>
 
