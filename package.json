@@ -1,6 +1,6 @@
 {
   "name": "nwawa",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "一个适合认证上班Electron程序",
   "main": "./out/main/index.js",
   "author": "example.com",
